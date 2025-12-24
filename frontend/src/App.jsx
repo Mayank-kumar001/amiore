@@ -9,6 +9,8 @@ import Product from './pages/Product'
 import Layout from './layouts/Layout'
 import IndivisualProjectPage from './pages/IndivisualProjectPage'
 import Checkout from './pages/Checkout'
+import OrderSuccessful from './pages/OrderSuccesfull'
+import AdminPage from './pages/AdminPage'
 function App() {
   const { checkAuth, isCheckingUserAuth } = authStore()
   useEffect(() => {
@@ -26,16 +28,19 @@ function App() {
   return (
 
 
-    <div className='min-h-screen'>
+    <div className='min-h-screen mt-6'>
       <Toaster position="bottom-right" reverseOrder={false} />
 
       <Routes>
+        <Route path='/' element={<Home />} />
         <Route path='/' element={<Layout />}>
-          <Route index element={<Home />} />
           <Route path='/profile' element={<Profile />} />
           <Route path='/product/:productId' element={<IndivisualProjectPage />} />
-          <Route path='/products/:categoryId' element={<Product />} />
+          <Route path='/products/:parentId' element={<Product />} />
           <Route path='/checkout' element={<Checkout />} />
+          <Route path='/orderSucessful/:orderId' element={<OrderSuccessful />} />
+          <Route path='/admin' element={<AdminPage />} />
+
         </Route>
       </Routes>
 

@@ -2,8 +2,10 @@ import { Loader2, Minus, Plus, X } from "lucide-react";
 import React, { useEffect } from "react";
 import { motion } from "motion/react";
 import { cartStore } from "../store/cartStore";
+import { useNavigate } from "react-router-dom";
 
 function CartModalComponent({ modalOpen, setModalOpen }) {
+  const navigate = useNavigate();
   const {
     fetchCartItems,
     cartItems,
@@ -23,7 +25,7 @@ function CartModalComponent({ modalOpen, setModalOpen }) {
     fetchCartItems();
   }, []);
   return (
-    <div className="fixed inset-0 flex h-full w-full items-center justify-center bg-black/50">
+    <div className="fixed z-20 inset-0 flex h-full w-full items-center justify-center bg-black/50">
       <motion.div
         initial={{
           opacity: 0,
@@ -36,7 +38,7 @@ function CartModalComponent({ modalOpen, setModalOpen }) {
           opacity: 1,
           scale: 1,
           filter: `blur(0px)`,
-          width: "50%",
+          width: window.innerWidth < 768 ? "100%" : "50%",
         }}
         exit={{
           opacity: 0,
@@ -45,7 +47,7 @@ function CartModalComponent({ modalOpen, setModalOpen }) {
           width: 0,
           height: "100vh",
         }}
-        className="absolute right-0 h-full min-h-screen w-[50%] bg-white px-4 py-6 flex flex-col gap-6"
+        className="absolute right-0 h-full min-h-screen w-full bg-white px-4 py-6 flex flex-col gap-6 "
       >
         {isLoading ? (
           <div className="flex h-full w-full items-center justify-center">
@@ -53,15 +55,15 @@ function CartModalComponent({ modalOpen, setModalOpen }) {
           </div>
         ) : (
           <>
-            <div className="mb-10">
+            <div className="mb-10 flex justify-end">
               
               <X
-                className="cursor-pointer"
+                className="cursor-pointer hover:rotate-90 transition-transform duration-300"
                 onClick={() => setModalOpen(false)}
                 size={24}
               />
             </div>
-            <div className="overflow-y-scroll  h-[70%]">
+            {cartItems.length !==0 ? <div className="overflow-y-scroll  h-[70%]">
 
             
             {cartItems.map((elem) => (
@@ -94,7 +96,7 @@ function CartModalComponent({ modalOpen, setModalOpen }) {
                       </button>
                       <span>
                         {isUpdatingId === elem.inventory.id ? (
-                          <Loader2 className="animate-spin" />
+                          <Loader2 size={16} className="animate-spin" />
                         ) : (
                           elem.quantity
                         )}
@@ -113,14 +115,18 @@ function CartModalComponent({ modalOpen, setModalOpen }) {
                 </div>
               </div>
             ))}
-            </div>
+            </div> : <div className="flex h-full w-full items-center justify-center text-2xl font-semibold text-neutral-200">Your cart is empty</div>}
             <div className="h-0.5 w-full bg-neutral-100"></div>
             <div className="flex w-full justify-between ">
                 <span>Sub Total</span>
                 <span>₹{subTotalAmount}</span>
             </div>
             <div className="h-0.5 w-full bg-neutral-100"></div>
-            <button className="bg-black text-white font-medium w-full py-3 rounded-md ">Secure Checkout</button>
+            <button onClick={() => {
+              setModalOpen(false);
+              if(cartItems.length !==0) navigate("/checkout");
+
+            }} className="bg-black text-white font-medium w-full py-3 rounded-md cursor-pointer ">{cartItems.length !==0 ? "Secure Checkout" : "Shop now"}</button>
           </>
         )}
       </motion.div>

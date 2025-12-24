@@ -214,6 +214,45 @@ export const getProductById = async (req, res) => {
         });
     }
 };
+export const getProductByParentId = async (req, res) => {
+  try {
+    const parentId = req.params.parentId;
+
+    // STEP 1: all children of given parent
+    const childCategories = await db.category.findMany({
+      where: { parentId },
+      select: { id: true },
+    });
+    console.log(childCategories)
+
+    // If no children → return empty
+    if (childCategories.length === 0) {
+      return res.status(200).json(
+        new apiResponse(200, [], "No child categories or products found")
+      );
+    }
+
+    // STEP 2: fetch all products for those child categories
+    const products = await db.product.findMany({
+      where: { 
+        categoryId: { in: childCategories.map(c => c.id) } 
+      },
+      include: { category: true },
+    });
+
+    return res.status(200).json(
+      new apiResponse(200, products, "Products fetched successfully")
+    );
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      statusCode: 500,
+      message: "Something went wrong while fetching the products",
+      success: false,
+    });
+  }
+};
 export const getProductByCategoryId = async (req, res) => {
     try {
         const products = await db.Product.findMany({
@@ -248,17 +287,17 @@ export const getProductByGender = async (req, res) => {
         const products = await db.product.findMany({
             where: {
                 category: {
-                    gender: req.params.gender, 
+                    gender: req.params.gender,
                 },
             },
             include: {
-                category: true, 
+                category: true,
                 inventory: true
             },
         });
         res.status(200).json(new apiResponse(200, products, "Products fetched successfully"));
     } catch (error) {
-        console.log(error.message); 
+        console.log(error.message);
         if (error instanceof apiError) {
             return res.status(error.statusCode).json({
                 statusCode: error.statusCode,

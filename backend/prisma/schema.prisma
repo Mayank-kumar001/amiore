@@ -13,7 +13,6 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
 enum Role {
   USER
   ADMIN
@@ -25,10 +24,11 @@ enum AuthSource {
 }
 
 enum OrderStatus {
-   PENDING 
-   PAID 
-   FAILED 
-   REFUNDED
+  PENDING
+  COD
+  PAID
+  FAILED
+  REFUNDED
 }
 
 model User {
@@ -44,8 +44,8 @@ model User {
   authProvider     AuthSource @default(LOCAL)
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @updatedAt
-  cartItem Cart[]
-  orders Order[]
+  cartItem         Cart[]
+  orders           Order[]
   // inventory Inventory @relation(fields: [inventoryId], references: [id])
 }
 
@@ -56,79 +56,103 @@ model Product {
   price       Float
   mainImage   String?
   subImage    String[]
+  tag         ProductTag[]
   isAvailable Boolean
   discount    Float
-  categoryId String
+  categoryId  String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-
-// relation
-  category   Category @relation(fields: [categoryId], references: [id])
-  inventory   Inventory[]
-  cartItem Cart[]
-
+  // relation
+  category  Category    @relation(fields: [categoryId], references: [id])
+  inventory Inventory[]
+  cartItem  Cart[]
 }
 
 model Category {
-  id          String   @id @default(uuid())
-  name        String   
+  id          String    @id @default(uuid())
+  name        String
   description String?
+  tag         Tag[]
   gender      String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  parentId  String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  parent    Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children  Category[] @relation("CategoryHierarchy")
+
   products    Product[]
 
   @@unique([name, gender])
 }
 
+model Tag {
+  id         String      @id @default(uuid())
+  name       String
+  categoryId String
+  category   Category    @relation(fields: [categoryId], references: [id])
+  products   ProductTag[]
+}
+
+model ProductTag {
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+
+  tag       Tag     @relation(fields: [tagId], references: [id])
+  tagId     String
+
+  @@id([productId, tagId]) // prevents duplicates
+}
+
+
 model Inventory {
   id        String   @id @default(uuid())
   productId String
-  size      String   
+  size      String
   quantity  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   // @@unique([userId, inventoryId])
   //relation
 
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product  Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   cartItem Cart[]
 }
 
 model Cart {
-  id        String   @id @default(uuid())
-  userId    String
-  productId String
+  id          String   @id @default(uuid())
+  userId      String
+  productId   String
   inventoryId String
-  quantity  Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  quantity    Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  // inventory  Inventory  @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+
+  inventory Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
 
   //relations
   // @@unique([userId, productId])
   @@unique([userId, inventoryId])
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  product  Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  // inventory  Inventory  @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
-
-  inventory Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
 }
 
 model Order {
-  id               String      @id @default(uuid())
-  userId           String
-  amount           Int         
-  currency         String      @default("INR")
-  status           OrderStatus @default(PENDING)
-  lineItems        Json        
-  razorpayOrderId  String?     @unique
+  id                String      @id @default(uuid())
+  userId            String
+  amount            Int
+  currency          String      @default("INR")
+  status            OrderStatus @default(PENDING)
+  delivered         Boolean @default(false)
+  userInfo          Json
+  lineItems         Json
+  razorpayOrderId   String?     @unique
   razorpayPaymentId String?
   razorpaySignature String?
-  createdAt        DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
 
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
-
-

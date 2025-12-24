@@ -4,6 +4,7 @@ import toast from "react-hot-toast"
 
 export const productStore  = create((set,get) => ({
     allProducts: [],
+    productSubCategory:[],
     isFetchingAllProducts: false,
     isFetchingProductDetails: false,
     currentProduct: null,
@@ -13,10 +14,31 @@ export const productStore  = create((set,get) => ({
             const res = await axiosInstance.get(`product/get-productByCategoryId/${categoryId}`)
             console.log("helloworld",res.data.data);
             set({allProducts: res.data.data})
+            const subCategory = res.data.data.map((product) => product.tag).filter((tag, index, arr) => arr.indexOf(tag) === index);
+            set({productSubCategory: subCategory})
             toast.success("products fetched successfully")
         } catch (error) {
             toast.error(`something went wrong while fetching the products`);
-            throw new Error("error in fetching products")
+            console.log(error);
+            throw new Error(error.message)
+        }
+        finally{
+            set({isFetchingAllProducts: false})
+        }
+    },
+    getProductsByParentId : async(parentId) => {
+        try {
+            set({isFetchingAllProducts: true})
+            const res = await axiosInstance.get(`product/get-productByparentId/${parentId}`)
+            console.log("helloworld",res.data.data);
+            set({allProducts: res.data.data})
+            const subCategory = res.data.data.map((product) => product.category.name).filter((tag, index, arr) => arr.indexOf(tag) === index);
+            set({productSubCategory: subCategory})
+            toast.success("products fetched successfully")
+        } catch (error) {
+            toast.error(`something went wrong while fetching the products`);
+            console.log(error);
+            throw new Error(error.message)
         }
         finally{
             set({isFetchingAllProducts: false})

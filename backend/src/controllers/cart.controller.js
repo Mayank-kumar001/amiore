@@ -136,7 +136,32 @@ export const removeFromCart = async (req, res) => {
         });
     }
 }
+export const emptyCart = async (req, res) => {
+    try {
+        await db.Cart.deleteMany({
+            where: {
+                userId: req.user.id
+            }
+        })
 
+        res.status(200).json(new apiResponse(200, {}, "Cart cleared"))
+    } catch (error) {
+        console.log(error.message);
+
+        if (error instanceof apiError) {
+            return res.status(error.statusCode).json({
+                statusCode: error.statusCode,
+                message: error.message,
+                success: false,
+            });
+        }
+        return res.status(500).json({
+            statusCode: 500,
+            message: "Something went wrong while emptying cart",
+            success: false,
+        });
+    }
+}
 export const decrementQuantity = async (req, res) => {
     try {
         const { inventoryId } = req.params;

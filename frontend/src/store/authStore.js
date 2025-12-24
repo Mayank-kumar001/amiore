@@ -13,7 +13,9 @@ export const authStore = create((set,get) => ({
     isCheckingUser: false,
     isCheckingUserAuth: false,
     authModalOpen: false,
+    hamburgerOpen: false,
     setAuthModalOpen: (state) => set({ authModalOpen: state }),
+    setHamburgerOpen: (state) => set({ hamburgerOpen: state }),
     authState: "checkUser",// checkUser| signIn | login | verifyUser | forgotPassword | resetUserPassword | authenticated
     
     changeAuthState: (state) => set({ authState: state }),

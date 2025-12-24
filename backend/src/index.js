@@ -18,6 +18,7 @@ app.use(
 app.use(cookieParser())
 app.use(express.json())
 
+console.log("portooo", process.env.PORT)
 const port = process.env.PORT ?? 8080;
 
 app.get("/", (req, res) => {
@@ -37,7 +38,7 @@ app.use("/api/v1/auth", authRouter)
 app.use("/api/v1/product", productRouter)
 app.use("/api/v1/category", categoryRouter)
 app.use("/api/v1/cart", cartRouter)
-app.use("/api/v1/payements", payementRouter)
+app.use("/api/v1/payments", payementRouter)
 
 
 

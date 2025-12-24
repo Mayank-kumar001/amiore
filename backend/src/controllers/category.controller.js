@@ -11,12 +11,13 @@ export const createCategory = async (req, res) => {
         if(!schemaCheck.success){
             throw new apiError(400, schemaCheck.error.issues[0].message);
         }
-        const {name, description, gender} = req.body
+        const {name, description, gender, parentId} = req.body
         const category = await db.Category.create({
             data:{
                 name,
                 description,
-                gender
+                gender,
+                parentId
             }
         })
         res.status(200).json(new apiResponse(200, category, "Category created successfully"));
@@ -80,6 +81,7 @@ export const deleteCategory = async (req, res) => {
 export const getAllCategory = async (req, res) => {
     try {
         const categories = await db.Category.findMany();
+        
         res.status(200).json(new apiResponse(200, categories, "Categories fetched successfully")); 
     } catch (error) {
         console.log(error.message);

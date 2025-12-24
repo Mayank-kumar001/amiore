@@ -37,6 +37,15 @@ export const cartStore = create((set) => ({
             set({ isLoading: false });
         }
     },
+    emptyCart: async () => {
+        try {
+            await axiosInstance.delete("/cart/empty-Cart");
+
+        } catch (error) {
+            console.log(error); 
+
+        }
+    },
 
     removeProduct: async (inventoryId) => {
         set({ isLoading: true });

@@ -1,1 +1,9 @@
 @import "tailwindcss";
+
+
+.product-scroll-container::-webkit-scrollbar {
+  display: none;           /* Chrome, Safari, Opera */
+}
+.crousel-container{
+  user-select: none;
+}
