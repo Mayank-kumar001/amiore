@@ -12,7 +12,43 @@ import { db } from "../utils/db.utils.js";
 import bcrypt from "bcryptjs";
 import sendMail from "../utils/sendMail.utils.js";
 import { AuthSource, Role } from "../generated/prisma/index.js";
-import  jwt  from "jsonwebtoken";
+import jwt from "jsonwebtoken";
+import ImageKit from 'imagekit';
+
+
+
+export const imagekitAuth = async (req, res) => {
+  try {
+    const client = new ImageKit({
+      privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
+      publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
+      urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
+    });
+    console.log(client)
+    const { token, expire, signature } = client.getAuthenticationParameters();
+    res.status(200).json(new apiResponse(200, { token, 
+      expire, 
+      signature, 
+      publicKey: process.env.IMAGEKIT_PUBLIC_KEY }, 
+      "imagekit auth data fetched succesfully"))
+  res.send({ token, expire, signature, publicKey: process.env.IMAGEKIT_PUBLIC_KEY });
+  } catch (error) {
+    console.log(error.message);
+
+    if (error instanceof apiError) {
+      return res.status(error.statusCode).json({
+        statusCode: error.statusCode,
+        message: error.message,
+        success: false,
+      });
+    }
+    return res.status(500).json({
+      statusCode: 500,
+      message: "Something went wrong while fetching imagekit auth data",
+      success: false,
+    });
+  }
+}
 
 const sendOTP = async () => {
   const otp = Math.floor(100000 + Math.random() * 900000);
@@ -22,20 +58,20 @@ const sendOTP = async () => {
 
 export const UserExist = async (req, res) => {
   try {
-    const {email} = req.params;
+    const { email } = req.params;
     const user = await db.User.findUnique({
       where: {
         email,
       },
     })
-    if(user){
-      return res.status(200).json(new apiResponse(200, {isVerified: user.isVerified}, "User exist"));
+    if (user) {
+      return res.status(200).json(new apiResponse(200, { isVerified: user.isVerified }, "User exist"));
     }
     throw new apiError(403, "User does not exist");
   } catch (error) {
     console.log(error.message);
 
-     if (error instanceof apiError) {
+    if (error instanceof apiError) {
       return res.status(error.statusCode).json({
         statusCode: error.statusCode,
         message: error.message,
@@ -47,7 +83,7 @@ export const UserExist = async (req, res) => {
       message: "Something went wrong while checking the user",
       success: false,
     });
-  
+
 
   }
 }
@@ -77,7 +113,7 @@ export const registerUser = async (req, res) => {
 
     const verificationCode = await sendOTP();
     console.log(verificationCode);
-    
+
     const user = await db.User.create({
       data: {
         username,
@@ -276,12 +312,12 @@ export const loginUser = async (req, res) => {
     res
       .status(200)
       .json(new apiResponse(200, {
-          username: user.username,
-          email: user.email,
-          role: user.role,
-          isVerified: user.isVerified,
-          authProvider: user.authProvider,
-        }, "User log in successfull"));
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        isVerified: user.isVerified,
+        authProvider: user.authProvider,
+      }, "User log in successfull"));
   } catch (error) {
     console.log(error.message);
 
@@ -408,7 +444,7 @@ export const logoutUser = async (req, res) => {
       secure: process.env.NODE_ENV !== "development",
     });
 
-    res.status(200).json( new apiResponse(200, {}, "User logout successfully"))
+    res.status(200).json(new apiResponse(200, {}, "User logout successfully"))
 
   } catch (error) {
     console.log(error.message);
@@ -453,17 +489,19 @@ export const getUserData = async (req, res) => {
   }
 }
 
-export const checkAuth = async (req , res)=>{
-    try {
-        res.status(200).json({
-            success:true,
-            message:"User authenticated successfully",
-            user:req.user
-        });
-    } catch (error) {
-        console.error("Error checking user:", error);
-        res.status(500).json({
-            error:"Error checking user"
-        })
-    }
+export const checkAuth = async (req, res) => {
+  try {
+    res.status(200).json({
+      success: true,
+      message: "User authenticated successfully",
+      user: req.user
+    });
+  } catch (error) {
+    console.error("Error checking user:", error);
+    res.status(500).json({
+      error: "Error checking user"
+    })
+  }
 }
+
+

@@ -7,7 +7,10 @@ export const productStore  = create((set,get) => ({
     productSubCategory:[],
     isFetchingAllProducts: false,
     isFetchingProductDetails: false,
+    isCreatingProduct: false,
     currentProduct: null,
+    stocks:[],
+    updateStocks: (stocks) => set({stocks}),
     getProductsByCategoryId : async(categoryId) => {
         try {
             set({isFetchingAllProducts: true})
@@ -57,6 +60,20 @@ export const productStore  = create((set,get) => ({
         }
         finally{
             set({isFetchingProductDetails: false})
+        }
+    },
+    createProduct: async(data) => {
+        try {
+            set({isCreatingProduct: true})
+            const response = await axiosInstance.post("/product/create-product", data);
+            console.log(response.data.data);
+            toast.success("product created successfully")
+
+        } catch (error) {
+            console.log(error)
+            toast.error(`${error.response.data.message}`);
+        }finally{
+            set({isCreatingProduct: false})
         }
     }
 }))

@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -13,6 +7,120 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id               String     @id @default(uuid())
+  username         String?
+  email            String     @unique
+  password         String
+  avatar           String?
+  role             Role       @default(USER)
+  isVerified       Boolean
+  verificationCode String?
+  authProvider     AuthSource @default(LOCAL)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  dateOfBirth      DateTime?
+  cartItem         Cart[]
+  orders           Order[]
+}
+
+model Product {
+  id          String       @id @default(uuid())
+  name        String       @unique
+  description String?
+  price       Float
+  colour      String?
+  type        String?
+  mainImage   String?
+  subImage    String[]
+  isAvailable Boolean?
+  discount    Float?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  categoryId  String
+  cartItem    Cart[]
+  inventory   Inventory[]
+  category    Category     @relation(fields: [categoryId], references: [id])
+  tag         ProductTag[]
+}
+
+model Category {
+  id          String     @id @default(uuid())
+  name        String     @unique
+  description String?
+  gender      String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  parentId    String?
+  parent      Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryHierarchy")
+  products    Product[]
+  tag         Tag[]
+
+  @@unique([name, gender])
+}
+
+model Tag {
+  id         String       @id @default(uuid())
+  name       String
+  categoryId String
+  products   ProductTag[]
+  category   Category     @relation(fields: [categoryId], references: [id])
+}
+
+model ProductTag {
+  productId String
+  tagId     String
+  product   Product @relation(fields: [productId], references: [id])
+  tag       Tag     @relation(fields: [tagId], references: [id])
+
+  @@id([productId, tagId])
+}
+
+model Inventory {
+  id        String   @id @default(uuid())
+  productId String
+  size      String
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  cartItem  Cart[]
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Cart {
+  id          String    @id @default(uuid())
+  userId      String
+  productId   String
+  inventoryId String
+  quantity    Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  inventory   Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, inventoryId])
+}
+
+model Order {
+  id                String      @id @default(uuid())
+  userId            String
+  amount            Int
+  currency          String      @default("INR")
+  status            OrderStatus @default(PENDING)
+  lineItems         Json
+  razorpayOrderId   String?     @unique
+  razorpayPaymentId String?
+  razorpaySignature String?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  delivered         Boolean     @default(false)
+  userInfo          Json
+  user              User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 enum Role {
   USER
   ADMIN
@@ -25,134 +133,8 @@ enum AuthSource {
 
 enum OrderStatus {
   PENDING
-  COD
   PAID
   FAILED
   REFUNDED
-}
-
-model User {
-  id               String     @id @default(uuid())
-  username         String?
-  email            String     @unique
-  password         String
-  avatar           String?
-  dateOfBirth      DateTime?
-  role             Role       @default(USER)
-  isVerified       Boolean
-  verificationCode String?
-  authProvider     AuthSource @default(LOCAL)
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @updatedAt
-  cartItem         Cart[]
-  orders           Order[]
-  // inventory Inventory @relation(fields: [inventoryId], references: [id])
-}
-
-model Product {
-  id          String   @id @default(uuid())
-  name        String   @unique
-  description String?
-  price       Float
-  mainImage   String?
-  subImage    String[]
-  tag         ProductTag[]
-  isAvailable Boolean
-  discount    Float
-  categoryId  String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // relation
-  category  Category    @relation(fields: [categoryId], references: [id])
-  inventory Inventory[]
-  cartItem  Cart[]
-}
-
-model Category {
-  id          String    @id @default(uuid())
-  name        String
-  description String?
-  tag         Tag[]
-  gender      String
-  parentId  String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  parent    Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
-  children  Category[] @relation("CategoryHierarchy")
-
-  products    Product[]
-
-  @@unique([name, gender])
-}
-
-model Tag {
-  id         String      @id @default(uuid())
-  name       String
-  categoryId String
-  category   Category    @relation(fields: [categoryId], references: [id])
-  products   ProductTag[]
-}
-
-model ProductTag {
-  product   Product @relation(fields: [productId], references: [id])
-  productId String
-
-  tag       Tag     @relation(fields: [tagId], references: [id])
-  tagId     String
-
-  @@id([productId, tagId]) // prevents duplicates
-}
-
-
-model Inventory {
-  id        String   @id @default(uuid())
-  productId String
-  size      String
-  quantity  Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  // @@unique([userId, inventoryId])
-  //relation
-
-  product  Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  cartItem Cart[]
-}
-
-model Cart {
-  id          String   @id @default(uuid())
-  userId      String
-  productId   String
-  inventoryId String
-  quantity    Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  // inventory  Inventory  @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
-
-  inventory Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
-
-  //relations
-  // @@unique([userId, productId])
-  @@unique([userId, inventoryId])
-}
-
-model Order {
-  id                String      @id @default(uuid())
-  userId            String
-  amount            Int
-  currency          String      @default("INR")
-  status            OrderStatus @default(PENDING)
-  delivered         Boolean @default(false)
-  userInfo          Json
-  lineItems         Json
-  razorpayOrderId   String?     @unique
-  razorpayPaymentId String?
-  razorpaySignature String?
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  COD
 }

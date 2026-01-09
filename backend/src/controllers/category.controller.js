@@ -11,12 +11,21 @@ export const createCategory = async (req, res) => {
         if(!schemaCheck.success){
             throw new apiError(400, schemaCheck.error.issues[0].message);
         }
-        const {name, description, gender, parentId} = req.body
+        const {name, description, parentId} = req.body
+        console.log(typeof(name));
+        console.log(name.toLowerCase());
+        const existingCategory = await db.Category.findUnique({
+            where: {
+                name: name.toLowerCase()
+            }
+        })
+        if(existingCategory){
+            throw new apiError(400, "Category already exists");
+        }
         const category = await db.Category.create({
             data:{
-                name,
+                name: name.toLowerCase(),
                 description,
-                gender,
                 parentId
             }
         })
@@ -85,6 +94,40 @@ export const getAllCategory = async (req, res) => {
         res.status(200).json(new apiResponse(200, categories, "Categories fetched successfully")); 
     } catch (error) {
         console.log(error.message);
+        if (error instanceof apiError) {
+            return res.status(error.statusCode).json({
+                statusCode: error.statusCode,
+                message: error.message,
+                success: false,
+            });
+        }
+        return res.status(500).json({
+            statusCode: 500,
+            message: "Something went wrong while fetching the categories",
+            success: false,
+        });
+    }
+}
+
+export const getCategoryDivision = async (req,res) => {
+    try {
+        // console.log("hello world");
+        const categoryData = await db.category.findMany();
+        const dividedData = {
+            children: [],
+            parents: []
+        }
+
+        categoryData.forEach(element => {
+            if(element.parentId === null){
+                dividedData.parents.push(element)
+            }else{
+                dividedData.children.push(element)
+            }
+        });
+        res.status(200).json(new apiResponse(200, dividedData, "Categories fetched successfully"));
+    } catch (error) {
+        console.log(error)
         if (error instanceof apiError) {
             return res.status(error.statusCode).json({
                 statusCode: error.statusCode,

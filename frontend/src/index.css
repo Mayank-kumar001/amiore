@@ -1,4 +1,8 @@
+@plugin "daisyui";
 @import "tailwindcss";
+
+
+
 
 
 .product-scroll-container::-webkit-scrollbar {

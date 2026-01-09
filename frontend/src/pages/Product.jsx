@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { Loader2, Plus } from "lucide-react";
 import { productStore } from "../store/productStore";
@@ -14,6 +14,10 @@ function Product() {
   const [showTagProduct, setShowTagProduct] = useState("All");
   const [showProduct, setShowProduct] = useState(allProducts);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const  showTag  = searchParams.get("showTag");
+  
+  // console.log(showTag)
   // if(showTagProduct === "All"){
   //   setShowProduct(allProducts);
   // }else{
@@ -24,15 +28,22 @@ function Product() {
   }, [parentId]);
 
   useEffect(() => {
+    if (showTag) {
+      setShowTagProduct(showTag);
+    }
+  }, [showTag]);
+
+  useEffect(() => {
+    
     if (showTagProduct === "All") {
       setShowProduct(allProducts);
     } else {
-      setShowProduct(allProducts.filter(p => p.category.name === showTagProduct));
+      setShowProduct(allProducts.filter(p => (p.category.name).toLowerCase() === showTagProduct));
     }
   }, [showTagProduct, allProducts]);
 
 
-
+console.log("sare products", allProducts)
 
   return (
     <div className="min-h-screen pt-6">
