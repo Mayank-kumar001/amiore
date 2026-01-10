@@ -177,27 +177,88 @@ export const verifyPayment = async (req, res) => {
     }
 }
 
-// export const getAllPendingOrders = async (req, res) => {
-//     try {
-//         const orders = await db.Order.findMany({
-//             where:{
-//                 delivered: false
-//             }
-//         })
-//         res.status(200).json(new apiResponse(200, orders, "Orders fetched successfully"))
-//     } catch (error) {
-//         console.log(error.message);
-//         if (error instanceof apiError) {
-//             return res.status(error.statusCode).json({
-//                 statusCode: error.statusCode,
-//                 message: error.message,
-//                 success: false,
-//             });
-//         }
-//         return res.status(500).json({
-//             statusCode: 500,
-//             message: "Something went wrong while fetching orders",
-//             success: false,
-//         });
-//     }
-// }
+export const getAllPendingOrders = async (req, res) => {
+    try {
+        const orders = await db.Order.findMany({
+            where: {
+                delivered: false
+            },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        email: true,
+                        username: true
+                    }
+                }
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        })
+        res.status(200).json(new apiResponse(200, orders, "Orders fetched successfully"))
+    } catch (error) {
+        console.log(error.message);
+        if (error instanceof apiError) {
+            return res.status(error.statusCode).json({
+                statusCode: error.statusCode,
+                message: error.message,
+                success: false,
+            });
+        }
+        return res.status(500).json({
+            statusCode: 500,
+            message: "Something went wrong while fetching orders",
+            success: false,
+        });
+    }
+}
+
+export const updateOrderStatus = async (req, res) => {
+    try {
+        const { orderId } = req.body;
+        
+        if (!orderId) {
+            throw new apiError(400, "Order ID is required");
+        }
+
+        const order = await db.Order.findUnique({
+            where: {
+                id: orderId
+            }
+        });
+
+        if (!order) {
+            throw new apiError(404, "Order not found");
+        }
+
+        if (order.delivered) {
+            throw new apiError(400, "Order is delivered");
+        }
+
+        const updatedOrder = await db.Order.update({
+            where: {
+                id: orderId
+            },
+            data: {
+                delivered: true
+            }
+        });
+
+        res.status(200).json(new apiResponse(200, updatedOrder, "Order delivery updated successfully"))
+    } catch (error) {
+        console.log(error.message);
+        if (error instanceof apiError) {
+            return res.status(error.statusCode).json({
+                statusCode: error.statusCode,
+                message: error.message,
+                success: false,
+            });
+        }
+        return res.status(500).json({
+            statusCode: 500,
+            message: "Something went wrong while updating order delivery status",
+            success: false,
+        });
+    }
+}

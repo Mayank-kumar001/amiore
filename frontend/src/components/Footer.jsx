@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Footer() {
   return (
     <footer className="bg-gray-50 mt-12 py-5 px-6 border-t border-gray-200">
@@ -6,71 +8,63 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* Column 1 */}
           <div className="space-y-4">
-            <a href="/about" className="block text-xs font-medium text-gray-900 hover:text-gray-600 transition-colors">
+            <Link to="/about" className="block text-xs font-medium text-gray-900 hover:text-gray-600 transition-colors">
               ABOUT
-            </a>
-            <a
-              href="/journal"
+            </Link>
+            <Link
+              to="/journal"
               className="block text-xs font-medium text-gray-900 hover:text-gray-600 transition-colors"
             >
               JOURNAL
-            </a>
-            <a
-              href="/contact"
+            </Link>
+            <Link
+              to="/contact"
               className="block text-xs font-medium text-gray-900 hover:text-gray-600 transition-colors"
             >
               CONTACT
-            </a>
-            <a href="/stores" className="block text-xs font-medium text-gray-900 hover:text-gray-600 transition-colors">
-              STORES
-            </a>
+            </Link>
+            
           </div>
 
           {/* Column 2 */}
           <div className="space-y-4">
-            <a
-              href="/size-guides"
+            <Link
+              to="/size-guides"
               className="block text-xs font-medium text-gray-900 hover:text-gray-600 transition-colors"
             >
               SIZE GUIDES
-            </a>
-            <a
-              href="/delivery"
+            </Link>
+            <Link
+              to="/delivery"
               className="block text-xs font-medium text-gray-900 hover:text-gray-600 transition-colors"
             >
               DELIVERY
-            </a>
-            <a
-              href="/returns"
+            </Link>
+            <Link
+              to="/privacy"
               className="block text-xs font-medium text-gray-900 hover:text-gray-600 transition-colors"
             >
-              RETURNS
-            </a>
-            <a href="/vip" className="block text-xs font-medium text-gray-900 hover:text-gray-600 transition-colors">
-              BECOME A VIP
-            </a>
+              PRIVACY POLICY
+            </Link>
+            
+            
           </div>
 
           {/* Column 3 */}
           <div className="space-y-4">
-            <a href="/faq" className="block text-xs font-medium text-gray-900 hover:text-gray-600 transition-colors">
+            <Link to="/faq" className="block text-xs font-medium text-gray-900 hover:text-gray-600 transition-colors">
               FAQ'S
-            </a>
-            <a
-              href="/careers"
+            </Link>
+            <Link
+              to="/careers"
               className="block text-xs font-medium text-gray-900 hover:text-gray-600 transition-colors"
             >
               CAREERS
-            </a>
-            <a href="/terms" className="block text-xs font-medium text-gray-900 hover:text-gray-600 transition-colors">
+            </Link>
+            <Link to="/terms" className="block text-xs font-medium text-gray-900 hover:text-gray-600 transition-colors">
               TERMS AND CONDITIONS
-            </a>
-            <a
-              href="/privacy"
-              className="block text-xs font-medium text-gray-900 hover:text-gray-600 transition-colors"
-            >
-              PRIVACY POLICY
-            </a>
+            </Link>
+            
           </div>
 
           {/* Column 4 */}

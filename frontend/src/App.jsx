@@ -11,6 +11,18 @@ import IndivisualProjectPage from './pages/IndivisualProjectPage'
 import Checkout from './pages/Checkout'
 import OrderSuccessful from './pages/OrderSuccesfull'
 import AdminPage from './pages/AdminPage'
+import AboutPage from './pages/AboutPage'
+import JournalPage from './pages/JournalPage'
+import ContactPage from './pages/ContactPage'
+import StoresPage from './pages/StoresPage'
+import SizeGuidesPage from './pages/SizeGuidesPage'
+import DeliveryPage from './pages/DeliveryPage'
+import ReturnsPage from './pages/ReturnsPage'
+import VIPPage from './pages/VIPPage'
+import FAQPage from './pages/FAQPage'
+import CareersPage from './pages/CareersPage'
+import TermsPage from './pages/TermsPage'
+import PrivacyPage from './pages/PrivacyPage'
 function App() {
   const { checkAuth, isCheckingUserAuth } = authStore()
   useEffect(() => {
@@ -40,7 +52,18 @@ function App() {
           <Route path='/checkout' element={<Checkout />} />
           <Route path='/orderSucessful/:orderId' element={<OrderSuccessful />} />
           <Route path='/admin' element={<AdminPage />} />
-
+          <Route path='/about' element={<AboutPage />} />
+          <Route path='/journal' element={<JournalPage />} />
+          <Route path='/contact' element={<ContactPage />} />
+          <Route path='/stores' element={<StoresPage />} />
+          <Route path='/size-guides' element={<SizeGuidesPage />} />
+          <Route path='/delivery' element={<DeliveryPage />} />
+          <Route path='/returns' element={<ReturnsPage />} />
+          <Route path='/vip' element={<VIPPage />} />
+          <Route path='/faq' element={<FAQPage />} />
+          <Route path='/careers' element={<CareersPage />} />
+          <Route path='/terms' element={<TermsPage />} />
+          <Route path='/privacy' element={<PrivacyPage />} />
         </Route>
       </Routes>
 
