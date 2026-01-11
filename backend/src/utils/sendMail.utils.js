@@ -43,6 +43,7 @@ const sendMail = async (otp, email) => {
 
   console.log({ data });
   } catch (error) {
+    console.log("error in sending mail")
     console.log(error)
   }
 }
