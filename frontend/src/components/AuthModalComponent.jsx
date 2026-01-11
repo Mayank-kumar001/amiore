@@ -7,6 +7,7 @@ import VerifyUserComponent from './VerifyUserComponent';
 import ForgotPasswordComponent from './ForgotPasswordComponent';
 import ResetUserPassword from './ResetUserPassword';
 
+
 function AuthModalComponent({modalOpen, setModalOpen}) {
     const { checkUser, isCheckingUser, authState } = authStore();
     const [userEmail, setUserEmail] = useState("");

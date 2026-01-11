@@ -50,9 +50,9 @@ export const imagekitAuth = async (req, res) => {
   }
 }
 
-const sendOTP = async () => {
+const sendOTP = async (email) => {
   const otp = Math.floor(100000 + Math.random() * 900000);
-  await sendMail(otp);
+  await sendMail(otp, email);
   return otp.toString();
 };
 
@@ -112,8 +112,8 @@ export const registerUser = async (req, res) => {
     console.log("hello 2")
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    console.log(hashedPassword)
-    const verificationCode = await sendOTP();
+
+    const verificationCode = await sendOTP(email);
     console.log(verificationCode);
 
     const user = await db.User.create({
@@ -238,7 +238,7 @@ export const resendVerificationCode = async (req, res) => {
 
     const { email } = req.body;
 
-    const verificationCode = await sendOTP();
+    const verificationCode = await sendOTP(email);
 
     const user = await db.User.update({
       where: {
@@ -348,7 +348,7 @@ export const forgotPassword = async (req, res) => {
 
     const { email } = req.body;
 
-    const verificationCode = await sendOTP();
+    const verificationCode = await sendOTP(email);
 
     const user = await db.User.update({
       where: {
