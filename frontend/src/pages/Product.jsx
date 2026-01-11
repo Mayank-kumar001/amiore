@@ -4,7 +4,7 @@ import Navbar from "../components/Navbar";
 import { Loader2, Plus } from "lucide-react";
 import { productStore } from "../store/productStore";
 import SideModalComponent from "../components/SideModalComponent";
-import CarouselComponent from "../components/carouselComponent";
+import CarouselComponent from "../components/CarouselComponent";
 import FilterComponent from "../components/FilterComponent";
 
 function Product() {

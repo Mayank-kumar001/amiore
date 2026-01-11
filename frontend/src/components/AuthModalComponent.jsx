@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { authStore } from '../store/authStore';
 import CheckUserComponent from './CheckUserComponent';
-import SignInComponent from './signInComponent';
+import SignInComponent from './SignInComponent';
 import LoginComponent from './LoginComponent';
 import VerifyUserComponent from './VerifyUserComponent';
 import ForgotPasswordComponent from './ForgotPasswordComponent';

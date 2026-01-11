@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar";
 import { Loader2, Lock, X } from "lucide-react";
 import { motion } from "motion/react";
 import { authStore } from "../store/authStore";
-import SignInComponent from "../components/signInComponent";
+import SignInComponent from "../components/SignInComponent";
 import LoginComponent from "../components/LoginComponent";
 import VerifyUserComponent from "../components/VerifyUserComponent";
 import ForgotPasswordComponent from "../components/ForgotPasswordComponent";

@@ -98,6 +98,7 @@ export const registerUser = async (req, res) => {
     }
 
     const { username, email, password, dateOfBirth } = schemaCheck.data;
+    console.log("hello 1")
 
     const existingUser = await db.User.findUnique({
       where: {
@@ -108,9 +109,10 @@ export const registerUser = async (req, res) => {
     if (existingUser) {
       throw new apiError(403, "User with this email already exist");
     }
+    console.log("hello 2")
 
     const hashedPassword = await bcrypt.hash(password, 10);
-
+    console.log(hashedPassword)
     const verificationCode = await sendOTP();
     console.log(verificationCode);
 
@@ -141,7 +143,7 @@ export const registerUser = async (req, res) => {
       ),
     );
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
 
     if (error instanceof apiError) {
       return res.status(error.statusCode).json({
