@@ -8,7 +8,7 @@ dotenv.config();
 
 app.use(
     cors({
-        origin:["http://210.79.129.8", "http://localhost:5173"],
+        origin:["http://210.79.129.8", "http://210.79.129.8:5173"],
         credentials: true,
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
         allowedHeaders: ["Content-Type", "Authorization", "Accept"],
