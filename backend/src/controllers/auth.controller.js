@@ -202,8 +202,8 @@ export const verifyUser = async (req, res) => {
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      sameSite: "strict",
-      secure: process.env.NODE_ENV !== "development",
+      sameSite: "LAX",
+      secure: false,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 
@@ -306,8 +306,8 @@ export const loginUser = async (req, res) => {
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      sameSite: "strict",
-      secure: process.env.NODE_ENV !== "development",
+      sameSite: "LAX",
+      secure: false,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 
@@ -442,8 +442,8 @@ export const logoutUser = async (req, res) => {
   try {
     res.clearCookie("accessToken", {
       httpOnly: true,
-      sameSite: "strict",
-      secure: process.env.NODE_ENV !== "development",
+      sameSite: "LAX",
+      secure: false,
     });
 
     res.status(200).json(new apiResponse(200, {}, "User logout successfully"))

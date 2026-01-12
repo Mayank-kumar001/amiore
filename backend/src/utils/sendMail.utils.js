@@ -1,6 +1,8 @@
 import nodemailer from "nodemailer"
 import { Resend } from 'resend';
-const resend = new Resend(process.env.RESEND_API_KEY);  
+import "dotenv/config"
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Create a test account or replace with real credentials.
 const transporter = nodemailer.createTransport({

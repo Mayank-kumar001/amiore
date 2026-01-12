@@ -36,7 +36,7 @@ export const authStore = create((set,get) => ({
     login: async (data) => {
         set({ isLoggingIn: true });
         try {
-            const res = await axiosInstance.post("/auth/login", data);
+            const res = await axiosInstance.post("/auth/login", data, { withCredentials: true });
             console.log(res.data);
             set({ userData: res.data.data });
             // console.log("hellllo jiii", )
@@ -72,7 +72,7 @@ export const authStore = create((set,get) => ({
     verifyUser: async (data) => {
         set({isVerifyingUser:true});
         try {
-            const res = await axiosInstance.post("/auth/email-verify", data);
+            const res = await axiosInstance.post("/auth/email-verify", data, { withCredentials: true });
             console.log(res.data);
             toast.success("verification successfull")
             set({authState: "authenticated"})
