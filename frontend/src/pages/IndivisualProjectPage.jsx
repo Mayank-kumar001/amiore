@@ -83,7 +83,7 @@ function IndivisualProjectPage() {
       <div className='h-screen w-full md:w-[50%] sticky top-0'>
         <div 
           ref={productImageRef} 
-          className='flex md:flex-col h-full w-full bg-red-500 overflow-y-scroll product-scroll-container relative'
+          className='flex md:flex-col h-full w-full overflow-y-hidden product-scroll-container relative'
         >
           <img src={currentProduct.mainImage} alt="Main product" className='w-full object-center object-cover' />
           {currentProduct.subImage.map((elem, idx) => (
