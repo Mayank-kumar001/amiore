@@ -42,7 +42,7 @@ function SignInComponent({ setModalOpen, userEmail }) {
       animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
       exit={{ opacity: 0, filter: "blur(10px)", scale: 0.98 }}
       transition={{ duration: 0.3, ease: "linear" }}
-      className="flex h-fit min-h-96 w-full max-w-md flex-col items-center justify-center gap-6 bg-white px-4 py-5 sm:px-6 md:px-8 rounded-md"
+      className="flex h-fit min-h-96 w-full max-w-md flex-col items-center justify-center gap-6 bg-white px-4 py-5 sm:px-6 md:px-8 rounded-md z-50"
     >
       {isSigningIn ? (
         <div className="flex w-full items-center justify-center">

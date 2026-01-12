@@ -196,6 +196,8 @@ function HamburgerComponent() {
           {console.log("subcategory", subcategoryItems)}
           {subcategoryItems.map((elem) => (<div key={elem.id} onClick={(e) => {
             e.stopPropagation()
+            setSecondaryHamburgerOpen(false)
+            setHamburgerOpen(false)
             navigate(`/products/${elem.parentId}?showTag=${elem.name}`)
           }} className='flex flex-col justify-between py-2  text-black/80 hover:bg-neutral-200 hover:cursor-pointer'>
             <span className='px-4'>{elem.name}</span>
