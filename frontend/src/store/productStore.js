@@ -10,6 +10,10 @@ export const productStore  = create((set,get) => ({
     isCreatingProduct: false,
     currentProduct: null,
     stocks:[],
+    selectedProduct: [],
+    setSelectedProduct:(value) => set({selectedProduct: value}),
+    sideModalOpen: false,
+    setSideModalOpen: (value) => set({sideModalOpen: value}),
     updateStocks: (stocks) => set({stocks}),
     getProductsByCategoryId : async(categoryId) => {
         try {

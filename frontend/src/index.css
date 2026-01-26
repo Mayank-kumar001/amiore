@@ -1,13 +1,28 @@
 @plugin "daisyui";
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
 
 
-
-
+/* :root{
+  text
+} */
 
 .product-scroll-container::-webkit-scrollbar {
   display: none;           /* Chrome, Safari, Opera */
 }
 .crousel-container{
   user-select: none;
+}
+
+.geist{
+  font-family: "Geist", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
