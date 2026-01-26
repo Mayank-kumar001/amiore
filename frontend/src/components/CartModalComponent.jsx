@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { motion } from "motion/react";
 import { cartStore } from "../store/cartStore";
 import { useNavigate } from "react-router-dom";
+import SuggestedForYouComponent from "./SuggestedForYouComponent";
 
 function CartModalComponent({ modalOpen, setModalOpen }) {
   const navigate = useNavigate();
@@ -18,9 +19,9 @@ function CartModalComponent({ modalOpen, setModalOpen }) {
 
   const subTotalAmount = cartItems.reduce(
     (acc, elem) => acc + elem.product.price * elem.quantity,
-    0                           
+    0
   )
-  
+
   useEffect(() => {
     fetchCartItems();
   }, []);
@@ -56,77 +57,82 @@ function CartModalComponent({ modalOpen, setModalOpen }) {
         ) : (
           <>
             <div className="mb-10 flex justify-end">
-              
+
               <X
                 className="cursor-pointer hover:rotate-90 transition-transform duration-300"
                 onClick={() => setModalOpen(false)}
                 size={24}
               />
             </div>
-            {cartItems.length !==0 ? <div className="overflow-y-scroll  h-[70%]">
+            {cartItems.length !== 0 ? <div className="overflow-y-scroll  h-[70%]">
 
-            
-            {cartItems.map((elem) => (
-              <div className="mt-1 flex items-center">
-                <span>
-                  <img
-                    src={elem.product.mainImage}
-                    alt=""
-                    width={"230px"}
-                    height={"300px"}
-                  />
-                  {/* {console.log("me from the cart bro", elem)} */}
-                </span>
-                <div className="w-full px-5">
-                  <span className="flex w-full justify-between px-5 py-3">
-                    <div className="font-bold">{elem.product.name}</div>
-                    <div>₹{elem.product.price}</div>
+
+              {cartItems.map((elem) => (
+                <div className="mt-1 flex items-center">
+                  <span>
+                    <img
+                      src={elem.product.mainImage}
+                      alt=""
+                      width={"230px"}
+                      height={"300px"}
+                    />
+                    {/* {console.log("me from the cart bro", elem)} */}
                   </span>
-                  <span className="flex w-full justify-between px-5 py-3">
-                    <div>size {elem.inventory.size}</div>
-                    <div className="flex items-center gap-4">
-                      <button disabled={isUpadatingQuantity}>
-                        <Minus
-                          className={`${isUpadatingQuantity ? "cursor-not-allowed" : "cursor-pointer"}`}
-                          size={16}
-                          onClick={async () =>
-                            await decrementQuantity(elem.inventory.id)
-                          }
-                        />
-                      </button>
-                      <span>
-                        {isUpdatingId === elem.inventory.id ? (
-                          <Loader2 size={16} className="animate-spin" />
-                        ) : (
-                          elem.quantity
-                        )}
-                      </span>
-                      <button disabled={isUpadatingQuantity}>
-                        <Plus
-                          className={`${isUpadatingQuantity ? "cursor-not-allowed" : "cursor-pointer"}`}
-                          size={16}
-                          onClick={async () =>
-                            await incrementQuantity(elem.inventory.id)
-                          }
-                        />
-                      </button>
-                    </div>
-                  </span>
+                  <div className="w-full px-5">
+                    <span className="flex w-full justify-between px-5 py-3">
+                      <div className="font-bold">{elem.product.name}</div>
+                      <div>₹{elem.product.price}</div>
+                    </span>
+                    <span className="flex w-full justify-between px-5 py-3">
+                      <div>size {elem.inventory.size}</div>
+                      <div className="flex items-center gap-4">
+                        <button disabled={isUpadatingQuantity}>
+                          <Minus
+                            className={`${isUpadatingQuantity ? "cursor-not-allowed" : "cursor-pointer"}`}
+                            size={16}
+                            onClick={async () =>
+                              await decrementQuantity(elem.inventory.id)
+                            }
+                          />
+                        </button>
+                        <span>
+                          {isUpdatingId === elem.inventory.id ? (
+                            <Loader2 size={16} className="animate-spin" />
+                          ) : (
+                            elem.quantity
+                          )}
+                        </span>
+                        <button disabled={isUpadatingQuantity}>
+                          <Plus
+                            className={`${isUpadatingQuantity ? "cursor-not-allowed" : "cursor-pointer"}`}
+                            size={16}
+                            onClick={async () =>
+                              await incrementQuantity(elem.inventory.id)
+                            }
+                          />
+                        </button>
+                      </div>
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
-            </div> : <div className="flex h-full w-full items-center justify-center text-2xl font-semibold text-neutral-200">Your cart is empty</div>}
+              ))}
+            </div> : <div className="flex flex-col h-full w-full items-center justify-between">
+              <div className="self-start mb-4">Your shopping bag is empty.</div>
+              <SuggestedForYouComponent setCartModalOpen={setModalOpen}/>
+              </div>}
+            {cartItems.length !== 0 &&<div className="flex flex-col gap-4">
             <div className="h-0.5 w-full bg-neutral-100"></div>
             <div className="flex w-full justify-between ">
-                <span>Sub Total</span>
-                <span>₹{subTotalAmount}</span>
+              <span>Sub Total</span>
+              <span>₹{subTotalAmount}</span>
             </div>
             <div className="h-0.5 w-full bg-neutral-100"></div>
             <button onClick={() => {
               setModalOpen(false);
-              if(cartItems.length !==0) navigate("/checkout");
+              if (cartItems.length !== 0) navigate("/checkout");
 
-            }} className="bg-black text-white font-medium w-full py-3 rounded-md cursor-pointer ">{cartItems.length !==0 ? "Secure Checkout" : "Shop now"}</button>
+            }} className="bg-black text-white font-medium w-full py-3 rounded-md cursor-pointer ">{cartItems.length !== 0 ? "Secure Checkout" : "Shop now"}</button>
+            </div>}
           </>
         )}
       </motion.div>

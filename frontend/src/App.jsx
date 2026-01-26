@@ -40,7 +40,7 @@ function App() {
   return (
 
 
-    <div className='min-h-screen mt-6'>
+    <div className='min-h-screen'>
       <Toaster position="bottom-right" reverseOrder={false} />
 
       <Routes>

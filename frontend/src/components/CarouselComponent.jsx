@@ -45,7 +45,7 @@ function CarouselComponent({ imageArr = [] }) {
 
   return (
     <div
-      className="relative w-full overflow-hidden rounded-lg group"
+      className="relative w-full overflow-hidden group"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
@@ -60,22 +60,20 @@ function CarouselComponent({ imageArr = [] }) {
       <button
         onClick={moveLeft}
         className="absolute top-1/2 left-3 -translate-y-1/2 
-                   bg-black/50 text-white p-2 rounded-full 
-                   opacity-100 md:opacity-0 md:group-hover:opacity-100 
+                   text-black md:opacity-0 md:group-hover:opacity-100 
                    transition"
       >
-        <MoveLeft size={20} />
+        <MoveLeft size={12} />
       </button>
 
       {/* Right Button */}
       <button
         onClick={moveRight}
         className="absolute top-1/2 right-3 -translate-y-1/2 
-                   bg-black/50 text-white p-2 rounded-full 
-                   opacity-100 md:opacity-0 md:group-hover:opacity-100 
+                  text-black md:opacity-0 md:group-hover:opacity-100 
                    transition"
       >
-        <MoveRight size={20} />
+        <MoveRight size={12} />
       </button>
 
       {/* Progress Bar */}
@@ -83,7 +81,7 @@ function CarouselComponent({ imageArr = [] }) {
         initial={{ width: "0%" }}
         animate={{ width: `${((index + 1) / imageArr.length) * 100}%` }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
-        className="absolute bottom-0 left-0 h-1 bg-black"
+        className="absolute bottom-0 left-0 h-[2px] bg-black "
       />
     </div>
   )

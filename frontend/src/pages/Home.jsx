@@ -22,7 +22,8 @@ function Home() {
   const { authModalOpen, setAuthModalOpen, setHamburgerOpen,hamburgerOpen } = authStore();
   const { cartModalOpen, setCartModalOpen } = cartStore();
   const [scrollPos, setScrollPos] = useState(0);
-
+  const [secondaryHamburgerOpen, setSecondaryHamburgerOpen] = useState(false);
+  const [isSearch, setIsSearch] = useState(false);
   useEffect(() => {
     if (authModalOpen || cartModalOpen || hamburgerOpen) {
       setScrollPos(window.scrollY);
@@ -41,10 +42,10 @@ function Home() {
 
   return (
     <div className="min-h-[94vh] w-full">
-      <div className='w-full bg-black text-white text-center text-xs font-medium py-2 '>NEW ARRIVALS HAVE LANDED - SHOP NOW</div>
-      <Navbar setAuthModalOpen={setAuthModalOpen} setCartModalOpen={setCartModalOpen} setHamburgerOpen={setHamburgerOpen} />
+      <div className='w-full bg-black text-white text-center text-xs font-medium py-3 hover:text-gray-300'>NEW ARRIVALS HAVE LANDED - SHOP NOW</div>
+      <Navbar setAuthModalOpen={setAuthModalOpen} setCartModalOpen={setCartModalOpen} setHamburgerOpen={setHamburgerOpen} hamburgerOpen={hamburgerOpen} secondaryHamburgerOpen={secondaryHamburgerOpen} setSecondaryHamburgerOpen={setSecondaryHamburgerOpen} isSearch={isSearch} setIsSearch={setIsSearch} />
       <div className="w-full h-full relative">
-      <HamburgerComponent/>
+      <HamburgerComponent secondaryHamburgerOpen={secondaryHamburgerOpen} setSecondaryHamburgerOpen={setSecondaryHamburgerOpen} />
       </div>
 
       {authModalOpen && <AuthModalComponent modalOpen={authModalOpen} setModalOpen={setAuthModalOpen} />}

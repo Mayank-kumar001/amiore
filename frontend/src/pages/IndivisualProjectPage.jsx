@@ -1,17 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { productStore } from '../store/productStore'
-import { Loader2 } from 'lucide-react'
+import { CornerDownRight, Loader2 } from 'lucide-react'
 import SideModalComponent from '../components/SideModalComponent'
 import { motion } from 'motion/react'
+import ProductDetailComponent from '../components/ProductDetailComponent'
+import SizeGuideComponent from '../components/SizeGuideComponent'
 
 function IndivisualProjectPage() {
   const { productId } = useParams()
   const { isFetchingProductDetails, currentProduct, getProductByProductId } = productStore()
   const [sideModalOpen, setSideModalOpen] = useState(false)
+  const [detailSideModalOpen, setDetailSideModalOpen] = useState(false)
+  const [sizeSideModalOpen, setSizeSideModalOpen] = useState(false)
+  const [data, setData] = useState({})
   const productImageRef = useRef(null)
   const [scrollImageProgress, setScrollImageProgress] = useState(0)
 
+  console.log("bhai log yeh dekho", currentProduct)
   // Track the image container scroll directly
   useEffect(() => {
     const handleImageScroll = () => {
@@ -99,22 +105,60 @@ function IndivisualProjectPage() {
       </div>
 
       <div className='h-[50vh] md:min-h-screen w-full md:w-[50%] py-24 px-16'>
-        <div className="flex font-bold justify-between ">
+        <div className="flex font-bold text-sm  justify-between ">
           <div>{currentProduct.name}</div>
           <div>₹{currentProduct.price}</div>
         </div>
-        <div className="flex justify-center">
+        <div className='text-xs mt-2'>New Arrival</div>
+        <div className="flex flex-col justify-center mt-20 gap-y-4">
+          <div className=''>SELECT A SIZE</div>
           <button 
             onClick={() => setSideModalOpen(true)} 
-            className="bg-black w-full py-4 cursor-pointer text-white mt-24"
+            className="bg-black w-full py-4 cursor-pointer text-white"
           >
             Add to Bag
           </button>
+        </div>
+        <div className='flex flex-col divide-y-2 divide-neutral-100 mt-12 '>
+
+          <div className='flex justify-between items-center py-3 cursor-pointer' onClick={() => {
+
+            setDetailSideModalOpen(true)
+            setData(currentProduct.description)
+            }}>
+            <span>DETAILS AND CARE</span>
+            <CornerDownRight size={12} />
+            </div>
+          <div className='flex justify-between items-center py-3 cursor-pointer' onClick={() => setSizeSideModalOpen(true)}>
+            <span>SIZE GUIDE</span>
+            <CornerDownRight size={12} />
+          </div>
+          <div className='flex justify-between items-center py-3 cursor-pointer' onClick={() => {
+
+            setDetailSideModalOpen(true)
+            setData("For orders within Australia, CALIBRE offers complimentary standard shipping. You can expect your order to arrive between 2-7 business days.Express Shipping is available with a cost of $15, your order can be expected to arrive within 1-2 business days.Delivery times are based on Metro area, please allow for an extra 1-2 business days for regional areas. You are welcome to visit the Australia Post website to see the expected delivery times to your postcode.")
+            }}>
+            <span>SHIPPING</span>
+            <CornerDownRight size={12} />
+          </div>
+          
         </div>
         {sideModalOpen && (
           <SideModalComponent 
             setSideModalOpen={setSideModalOpen} 
             product={currentProduct} 
+          />
+        )}
+        {detailSideModalOpen && (
+          <ProductDetailComponent 
+            setSideModalOpen={setDetailSideModalOpen} 
+            data={data} 
+          />
+        )}
+        {sizeSideModalOpen && (
+          <SizeGuideComponent 
+            setSideModalOpen={setSizeSideModalOpen} 
+            data={data} 
           />
         )}
       </div>
